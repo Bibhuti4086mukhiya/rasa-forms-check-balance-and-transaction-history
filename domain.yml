@@ -1,0 +1,86 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - ask_check_balance
+  - ask_transaction_history
+
+
+forms:
+  action_show_balance_form:
+    required_slots:
+      - account_number_for_balance
+  action_show_transaction_form:
+    required_slots:
+      - account_number_for_history
+
+slots:
+  type:
+      type: text
+      mappings:
+      - type: from_entity
+        entity: type
+
+  #account form
+  account_number_for_balance:
+      type: text
+      influence_conversation: true
+      mappings:
+      - type: from_text
+        conditions:
+        - active_loop: action_show_balance_form
+          requested_slot: account_number_for_balance
+
+  account_number_for_history:
+      type: text
+      influence_conversation: true
+      mappings:
+      - type: from_text
+        conditions:
+        - active_loop: action_show_transaction_form
+          requested_slot: account_number_for_history 
+
+
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_ask_action_show_transaction_form_account_number_for_history:
+  - text: "what is your account number?"
+
+  utter_ask_action_show_balance_form_account_number_for_balance:
+  - text: "what is your account number?"
+
+actions:
+- action_submit_account_number_for_balance
+- action_submit_account_number_for_transaction_history
+- action_reset_account_number_slot
+- action_reset_dynamic_fields_slot
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+

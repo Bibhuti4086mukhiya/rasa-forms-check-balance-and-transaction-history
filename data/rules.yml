@@ -1,0 +1,53 @@
+version: "3.1"
+
+rules:
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+
+- rule: Tell the corresponding account balance anytime the user asks
+  steps:
+  - intent: ask_check_balance
+  - action: action_reset_dynamic_fields_slot #clear slot
+  - action: action_show_balance_form
+  - active_loop: action_show_balance_form
+  
+
+- rule: Submit account number form
+  condition:
+  - active_loop: action_show_balance_form
+  steps:
+  - action: action_show_balance_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_account_number_for_balance
+  - action: action_reset_account_number_slot
+  - action: action_reset_dynamic_fields_slot
+
+- rule: Tell the corresponding transaction history anytime the user asks
+  steps:
+  - intent: ask_transaction_history
+  - action: action_reset_dynamic_fields_slot #clear slot
+  - action: action_show_transaction_form
+  - active_loop: action_show_transaction_form
+
+- rule: Submit transaction history form
+  condition:
+  - active_loop: action_show_transaction_form
+  steps:
+  - action: action_show_transaction_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_account_number_for_transaction_history
+  - action: action_reset_account_number_slot
+  - action: action_reset_dynamic_fields_slot
